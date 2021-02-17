@@ -14,3 +14,7 @@ Dictionary Symbol Browser is a web component that provides a interactive way to 
 `stylturl` defines the dictionary style. Here we are using a Military Symbol 2525BC-1 style as an example.
 
 `uiurl` defines an UI JSON associated with the style. 
+
+### Live Examples:
+https://fangli88.github.io/DictionarySymbolBrowserExamples/custom-element-arcgis-jsapi/
+https://fangli88.github.io/DictionarySymbolBrowserExamples/custom-element-leaflet/
