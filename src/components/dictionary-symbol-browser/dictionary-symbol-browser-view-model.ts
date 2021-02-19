@@ -1,19 +1,7 @@
-// //@ts-ignore
-// import DictionaryRenderer from "https://js.arcgis.com/4.18/@arcgis/core/renderers/DictionaryRenderer.js";
-
-// //@ts-ignore
-// import { A as ArcadeExpression } from "https://js.arcgis.com/4.18/@arcgis/core/chunks/arcadeOnDemand.js";
-
-// //@ts-ignore
-// import { renderPreviewHTML } from "https://js.arcgis.com/4.18/@arcgis/core/symbols/support/symbolUtils.js";
-
-// //@ts-ignore
-// import { c as callExpressionWithFeature } from "https://js.arcgis.com/4.18/@arcgis/core/chunks/callExpressionWithFeature.js";
-
 import DictionaryRenderer from "@arcgis/core/renderers/DictionaryRenderer";
 import ArcadeExpression from "@arcgis/core/support/arcadeOnDemand";
-import { renderPreviewHTML } from "@arcgis/core/symbols/support/symbolUtils";
 import callExpressionWithFeature from "@arcgis/core/views/2d/arcade/callExpressionWithFeature";
+import { CIMSymbolRasterizer } from "@arcgis/core/symbols/cim/CIMSymbolRasterizer";
 
 import { CIMSymbol } from "@arcgis/core/symbols";
 
@@ -22,7 +10,7 @@ import CodedValueDomain from "@arcgis/core/layers/support/CodedValueDomain";
 
 import Graphic from "@arcgis/core/Graphic";
 
-interface Feature {
+type Feature = {
   geometry?: any;
   attributes: Object;
   centroid?: {
@@ -31,7 +19,7 @@ interface Feature {
   };
 }
 
-interface Field {
+type Field = {
   name: string;
   type: any;
   alias: string;
@@ -51,7 +39,7 @@ type ConfigDomain = {
   info: string;
 };
 
-interface SubdomainsMap {
+type SubdomainsMap = {
   [key: string]: UIField[];
 }
 
@@ -66,12 +54,11 @@ type UIFieldJSON = {
   uiFields?: UIField[];
 }
 
-interface UIField {
+type UIField = {
   key: string;
   name: string;
   type: "text" | "coded-value-domain" | "expression" | "group";
 };
-
 
 export type SearchResultItem = {
   fieldKey: string | number,
@@ -148,6 +135,8 @@ class DictionarySymbologyBrowserViewModel {
   private _reverseFieldMap: Record<string, string>;
   private _uiFieldsFromSymbolValues: any; //used for editing
 
+  private _cimSymbolRasterizer: CIMSymbolRasterizer;
+
   constructor(params: any) {
     this.styleUrl = params.styleUrl;
     this.uiUrl = params.uiUrl;
@@ -161,6 +150,8 @@ class DictionarySymbologyBrowserViewModel {
     this._uiFieldDefaultValueMap = new Map<string, string | number>();
 
     this._groupExpandStatus = new Map<string, string>();
+
+    this._cimSymbolRasterizer = new CIMSymbolRasterizer(null, true);
   }
 
   styleUrl: string = null;
@@ -296,16 +287,28 @@ class DictionarySymbologyBrowserViewModel {
 
   async createPreviewImage(): Promise<HTMLImageElement> {
     const realFeature = this.getFeature();
+    const scalingFactor = 1.5;
     return this._renderer
       .getSymbolAsync(realFeature as Graphic)
-      .then((cimSymbol: CIMSymbol) =>
-        renderPreviewHTML(cimSymbol, {
-          feature: realFeature,
-          fieldMap: this._fieldMap,
-          size: 30,
-          style: "preview"
-        } as __esri.symbolUtilsRenderPreviewHTMLOptions)
-      )
+      .then((cimSymbol: CIMSymbol) => {
+        return this._cimSymbolRasterizer.rasterizeCIMSymbolAsync(cimSymbol, realFeature, this._fieldMap, "esriGeometryPoint", {
+          scaleFactor: scalingFactor
+        });
+      }).then((res) => {
+        const canvas = document.createElement("canvas");
+        canvas.width = res.imageData.width;
+        canvas.height = res.imageData.height;
+        const ctx = canvas.getContext("2d");
+        ctx.putImageData(res.imageData, 0, 0);
+
+        let width = canvas.width;
+        let height = canvas.height;
+
+        const image = new Image(width, height);
+        image.src = canvas.toDataURL();
+
+        return image;
+      })
       .then((image) => {
         return image as HTMLImageElement;
       });
