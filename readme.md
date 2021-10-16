@@ -16,5 +16,5 @@ Dictionary Symbol Browser is a web component that provides a interactive way to 
 `uiurl` defines an UI JSON associated with the style. 
 
 ### Live Examples:
-https://fangli88.github.io/DictionarySymbolBrowserExamples/custom-element-arcgis-jsapi/
-https://fangli88.github.io/DictionarySymbolBrowserExamples/custom-element-leaflet/
+https://kerryrobinson.github.io/DictionarySymbolBrowser/examples/custom-element-arcgis-jsapi/
+https://kerryrobinson.github.io/DictionarySymbolBrowser/examples/custom-element-leaflet/
