@@ -111,7 +111,7 @@
       				speed: "speed",
       				staffcomment: "staffComment",
       				type: "Type",
-      				uniquedesignation: "uniquedesignation",
+      				uniquedesignation: "uniquedesignation"
             },
             config: {
               frame: 'ON',
@@ -188,6 +188,7 @@
                       geometry: event.mapPoint,
                       attributes: {
                         sidc: currentAttributes.sidc,
+                        additionalinformation: currentAttributes.additionalinformation
                       },
                     }),
                   ],
@@ -223,6 +224,7 @@
                   attributes: {
                     ...editFeature.attributes,
                     sidc: currentAttributes.sidc,
+                    additionalinformation: currentAttributes.additionalinformation
                   },
                 }),
               ],
