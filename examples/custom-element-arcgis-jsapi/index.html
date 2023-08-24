@@ -88,6 +88,14 @@
               nullable: true,
               type: 'string',
             },
+            {
+              alias: 'HAS_NO_ALIAS',
+              editable: true,
+              length: -1,
+              name: 'additionalinformation',
+              nullable: true,
+              type: 'string',
+            },
           ],
           objectIdField: 'ObjectID',
           renderer: {
@@ -95,6 +103,15 @@
             url: 'https://www.arcgis.com/sharing/rest/content/items/7842f07fabbf48a4b768fc5aa66dc5b7',
             fieldMap: {
               sidc: 'sidc', //"Full_SIDC_2525C",
+      				additionalinformation: "additionalinformation",
+      				combateffectiveness: "combateffectiveness",
+      				operationalcondition: "operationalcondition",
+      				higherformation: "higherFormation",
+      				direction: "direction",
+      				speed: "speed",
+      				staffcomment: "staffComment",
+      				type: "Type",
+      				uniquedesignation: "uniquedesignation",
             },
             config: {
               frame: 'ON',
@@ -144,6 +161,7 @@
 
                     dsbNode.symbolAttributes = {
                       sidc: editFeature.attributes.sidc,
+                      additionalinformation: editFeature.attributes.additionalinformation
                     };
 
                     doneBtn.style.display = 'block';
